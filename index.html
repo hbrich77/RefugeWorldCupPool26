@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 Pool</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e1117;
+    --bg2: #161b25;
+    --bg3: #1e2535;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f2f5;
+    --text2: #8892a4;
+    --text3: #5a6474;
+    --gold: #f5c842;
+    --silver: #a8b3c4;
+    --bronze: #c8855a;
+    --green: #3ecf8e;
+    --green-bg: rgba(62,207,142,0.1);
+    --red: #e05555;
+    --red-bg: rgba(224,85,85,0.08);
+    --blue: #4a9eff;
+    --blue-bg: rgba(74,158,255,0.1);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .shell {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  /* Header */
+  .site-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .site-title { font-size: 22px; font-weight: 700; color: var(--text); }
+  .site-sub { font-size: 13px; color: var(--text2); margin-top: 3px; }
+  .sync-block { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+  .sync-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text2); font-size: 12px; padding: 6px 12px;
+    border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s;
+  }
+  .sync-btn:hover { color: var(--text); border-color: var(--blue); }
+  .sync-btn svg { width: 13px; height: 13px; }
+  .sync-btn.spinning svg { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sync-status { font-size: 11px; color: var(--text3); }
+
+  /* Nav tabs */
+  .nav { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+  .nav-btn {
+    background: none; border: none; color: var(--text2);
+    font-size: 13px; font-weight: 500; padding: 8px 14px;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all 0.15s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--text); border-bottom-color: var(--blue); }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Standings table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 500px; }
+  thead th {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text3); padding: 8px 12px;
+    border-bottom: 1px solid var(--border); text-align: left;
+  }
+  thead th.r { text-align: right; }
+  tbody tr { transition: background 0.1s; }
+  tbody tr:hover td { background: var(--bg3); }
+  tbody td { padding: 11px 12px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
+  tbody td.r { text-align: right; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .rank-num { font-weight: 600; font-size: 13px; color: var(--text3); }
+  .rank-1 { color: var(--gold); }
+  .rank-2 { color: var(--silver); }
+  .rank-3 { color: var(--bronze); }
+  .participant-name { font-weight: 600; }
+  .pts-val { font-size: 16px; font-weight: 700; color: var(--text); }
+  .wins-val { color: var(--text2); font-size: 13px; }
+
+  .teams-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+  .badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 20px;
+    border: 1px solid var(--border); color: var(--text2);
+    background: var(--bg2); white-space: nowrap;
+  }
+  .badge.alive { background: var(--green-bg); color: var(--green); border-color: rgba(62,207,142,0.25); }
+  .badge.out { opacity: 0.35; text-decoration: line-through; }
+  .badge.champion { background: rgba(245,200,66,0.12); color: var(--gold); border-color: rgba(245,200,66,0.3); }
+
+  /* Leader label */
+  .leader-tag {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    background: var(--blue-bg); color: var(--blue);
+    border: 1px solid rgba(74,158,255,0.25);
+    padding: 1px 7px; border-radius: 20px; margin-left: 7px;
+    vertical-align: middle; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  /* Cards grid (teams view) */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px;
+  }
+  .card-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  .card-pts { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+  .card-teams { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  /* Results panel */
+  .results-toolbar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+  .add-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--blue); color: #fff; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border: none; border-radius: var(--radius-sm); cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .add-btn:hover { opacity: 0.88; }
+  .clear-btn {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    font-size: 12px; padding: 7px 12px; border-radius: var(--radius-sm); cursor: pointer;
+  }
+  .clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .round-section { margin-bottom: 24px; }
+  .round-label { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text3); margin-bottom: 10px; }
+  .match-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap: 8px; }
+  .match-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 14px; position: relative;
+  }
+  .match-teams { display: flex; flex-direction: column; gap: 6px; }
+  .match-team { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .match-team-name { font-size: 13px; flex: 1; }
+  .match-team-name.winner { font-weight: 700; color: var(--green); }
+  .match-score { font-size: 16px; font-weight: 700; min-width: 22px; text-align: center; }
+  .match-owner { font-size: 11px; color: var(--text3); margin-top: 7px; border-top: 1px solid var(--border); padding-top: 6px; }
+  .del-btn {
+    position: absolute; top: 8px; right: 8px; background: none; border: none;
+    color: var(--text3); cursor: pointer; font-size: 16px; line-height: 1;
+    padding: 2px 4px; border-radius: 4px;
+  }
+  .del-btn:hover { color: var(--red); background: var(--red-bg); }
+
+  /* Scoring panel */
+  .score-key { max-width: 380px; }
+  .score-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-pts { font-weight: 700; color: var(--green); font-size: 15px; }
+  .score-note { font-size: 12px; color: var(--text2); margin-top: 14px; line-height: 1.6; }
+
+  /* Modal */
+  .modal-bg {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65); z-index: 200;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: var(--radius); padding: 24px; width: min(440px, 100%);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .field label { font-size: 12px; color: var(--text2); font-weight: 500; }
+  .field select, .field input {
+    background: var(--bg3); border: 1px solid var(--border2); color: var(--text);
+    font-size: 14px; padding: 8px 10px; border-radius: var(--radius-sm);
+    outline: none; transition: border-color 0.15s;
+  }
+  .field select:focus, .field input:focus { border-color: var(--blue); }
+  .score-fields { display: flex; gap: 10px; }
+  .score-fields .field { flex: 1; }
+  .modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+  .btn-cancel {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    font-size: 13px; padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer;
+  }
+  .btn-save {
+    background: var(--blue); color: #fff; font-size: 13px; font-weight: 600;
+    padding: 8px 18px; border: none; border-radius: var(--radius-sm); cursor: pointer;
+  }
+  .btn-save:hover { opacity: 0.88; }
+
+  /* Empty state */
+  .empty { color: var(--text3); font-size: 14px; padding: 20px 0; }
+
+  /* Auto-sync notice */
+  .sync-notice {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 14px;
+    font-size: 12px; color: var(--text2); margin-bottom: 18px; line-height: 1.6;
+  }
+  .sync-notice strong { color: var(--text); }
+
+  /* Mobile tweaks */
+  @media (max-width: 540px) {
+    .site-header { flex-direction: column; }
+    .sync-block { align-items: flex-start; }
+    thead th:nth-child(4) { display: none; }
+    tbody td:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="site-header">
+    <div>
+      <div class="site-title">🏆 World Cup 2026 Pool</div>
+      <div class="site-sub" id="sub-line">Loading scores…</div>
+    </div>
+    <div class="sync-block">
+      <button class="sync-btn" id="sync-btn" onclick="fetchScores()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+        Refresh scores
+      </button>
+      <div class="sync-status" id="sync-status">Auto-refreshes every 10 min</div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showTab('standings',this)">Standings</button>
+    <button class="nav-btn" onclick="showTab('teams',this)">Teams</button>
+    <button class="nav-btn" onclick="showTab('results',this)">Results</button>
+    <button class="nav-btn" onclick="showTab('scoring',this)">Scoring</button>
+  </nav>
+
+  <!-- STANDINGS -->
+  <div class="panel active" id="panel-standings">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th>Participant</th>
+            <th class="r">Pts</th>
+            <th class="r">W</th>
+            <th>Teams</th>
+          </tr>
+        </thead>
+        <tbody id="standings-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div class="panel" id="panel-teams">
+    <div class="cards" id="teams-grid"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="panel" id="panel-results">
+    <div class="sync-notice">
+      <strong>Auto-sync:</strong> Scores pull from the openfootball open-source dataset and refresh every 10 minutes. You can also add results manually below — manual entries take priority.
+    </div>
+    <div class="results-toolbar">
+      <button class="add-btn" onclick="openModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add result manually
+      </button>
+      <button class="clear-btn" onclick="clearManual()">Clear manual entries</button>
+    </div>
+    <div id="results-list"></div>
+  </div>
+
+  <!-- SCORING -->
+  <div class="panel" id="panel-scoring">
+    <div class="score-key">
+      <div class="score-row"><span>Group stage win</span><span class="score-pts">2 pts</span></div>
+      <div class="score-row"><span>Group stage draw</span><span class="score-pts">1 pt</span></div>
+      <div class="score-row"><span>Advance from groups</span><span class="score-pts">3 pts</span></div>
+      <div class="score-row"><span>Win Round of 32</span><span class="score-pts">3 pts</span></div>
+      <div class="score-row"><span>Win Round of 16</span><span class="score-pts">4 pts</span></div>
+      <div class="score-row"><span>Win Quarterfinal</span><span class="score-pts">5 pts</span></div>
+      <div class="score-row"><span>Win Semifinal</span><span class="score-pts">6 pts</span></div>
+      <div class="score-row"><span>Runner-up (loses Final)</span><span class="score-pts">5 pts</span></div>
+      <div class="score-row"><span>Win the Final 🏆</span><span class="score-pts">10 pts</span></div>
+    </div>
+    <p class="score-note">
+      The <strong>advance from groups</strong> bonus (3 pts) is awarded automatically the first time a team appears in a knockout round result.<br><br>
+      Scores sync from the <a href="https://github.com/openfootball/worldcup.json" target="_blank" style="color:var(--blue)">openfootball open dataset</a> — updated ~daily by community contributors. You can also add results manually in the Results tab if a score hasn't synced yet.
+    </p>
+  </div>
+
+</div>
+
+<!-- ADD RESULT MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>Add result manually</h3>
+    <div class="field">
+      <label>Round</label>
+      <select id="m-round">
+        <option value="Group Stage">Group Stage</option>
+        <option value="Round of 32">Round of 32</option>
+        <option value="Round of 16">Round of 16</option>
+        <option value="Quarterfinal">Quarterfinal</option>
+        <option value="Semifinal">Semifinal</option>
+        <option value="Final">Final</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Team 1</label>
+      <select id="m-t1"></select>
+    </div>
+    <div class="score-fields">
+      <div class="field"><label>Score 1</label><input type="number" id="m-s1" min="0" value="0"></div>
+      <div class="field"><label>Score 2</label><input type="number" id="m-s2" min="0" value="0"></div>
+    </div>
+    <div class="field">
+      <label>Team 2</label>
+      <select id="m-t2"></select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveManual()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── POOL DATA ──────────────────────────────────────────────────────────────
+const POOL = [
+  { name:'Geoff',   teams:['Australia','Paraguay','Haiti','Panama','Congo DR'] },
+  { name:'Nikki',   teams:['Austria','Turkey','Bosnia','Belgium'] },
+  { name:'Matt',    teams:['Ecuador','Ghana','Japan','Brazil'] },
+  { name:'Gabe',    teams:['Iran','Tunisia','Germany','Egypt'] },
+  { name:'David',   teams:['Qatar','Algeria','England','Norway'] },
+  { name:'Brandon', teams:['Spain','Curaçao','Uruguay','Uzbekistan'] },
+  { name:'Steph',   teams:['Sweden','Colombia','Cape Verde','Portugal'] },
+  { name:'Brendan', teams:['Switzerland','Saudi Arabia','South Africa','Canada'] },
+  { name:'Pax',     teams:['Netherlands','Mexico','New Zealand'] },
+  { name:'Blake',   teams:['USA','Croatia','South Korea','Scotland'] },
+  { name:'Bill',    teams:['Senegal','Ivory Coast','Argentina','Czechia'] },
+  { name:'Shady',   teams:['France','Morocco','Jordan','Iraq'] },
+];
+
+// Map openfootball team name variants → pool names
+const ALIASES = {
+  'United States': 'USA',
+  'US': 'USA',
+  'Korea Republic': 'South Korea',
+  'Republic of Korea': 'South Korea',
+  'South Korea': 'South Korea',
+  'Ivory Coast': 'Ivory Coast',
+  "Côte d'Ivoire": 'Ivory Coast',
+  'Cote d\'Ivoire': 'Ivory Coast',
+  'DR Congo': 'Congo DR',
+  'Congo DR': 'Congo DR',
+  'Democratic Republic of Congo': 'Congo DR',
+  'Bosnia and Herzegovina': 'Bosnia',
+  'Bosnia & Herzegovina': 'Bosnia',
+  'Bosnia-Herzegovina': 'Bosnia',
+  'Cape Verde': 'Cape Verde',
+  'Cabo Verde': 'Cape Verde',
+  'Curacao': 'Curaçao',
+  'Curaçao': 'Curaçao',
+  'Czech Republic': 'Czechia',
+  'Czechia': 'Czechia',
+  'New Zealand': 'New Zealand',
+  'Saudi Arabia': 'Saudi Arabia',
+  'South Africa': 'South Africa',
+};
+
+const ALL_TEAMS = [...new Set(POOL.flatMap(p => p.teams))].sort();
+
+// ─── SCORING RULES ───────────────────────────────────────────────────────────
+const ROUND_PTS = {
+  'Group Stage':   { win:2, draw:1 },
+  'Round of 32':   { win:3 },
+  'Round of 16':   { win:4 },
+  'Quarterfinal':  { win:5 },
+  'Semifinal':     { win:6 },
+  'Final':         { win:10 },
+};
+const ADVANCE_PTS  = 3;
+const RUNNER_UP_PTS = 5;
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let apiResults  = [];   // from openfootball
+let manualResults = JSON.parse(localStorage.getItem('wc26_manual') || '[]');
+
+// ─── OPENFOOTBALL FETCH ──────────────────────────────────────────────────────
+// Maps openfootball round strings to our round keys
+function mapRound(r) {
+  if (!r) return null;
+  const s = r.toLowerCase();
+  if (s.includes('matchday') || s.includes('group') || s.match(/^md\d/)) return 'Group Stage';
+  if (s.includes('round of 32') || s.includes('round of thirty')) return 'Round of 32';
+  if (s.includes('round of 16') || s.includes('last 16') || s.includes('round of sixteen')) return 'Round of 16';
+  if (s.includes('quarter')) return 'Quarterfinal';
+  if (s.includes('semi')) return 'Semifinal';
+  if (s.includes('final')) return 'Final';
+  return null;
+}
+
+function normalizeTeam(name) {
+  if (!name) return null;
+  const trimmed = name.trim();
+  return ALIASES[trimmed] || trimmed;
+}
+
+async function fetchScores() {
+  const btn = document.getElementById('sync-btn');
+  const status = document.getElementById('sync-status');
+  btn.classList.add('spinning');
+  status.textContent = 'Fetching scores…';
+
+  try {
+    const url = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const matches = data.matches || [];
+
+    apiResults = [];
+    for (const m of matches) {
+      if (!m.score) continue; // not yet played
+      const ft = m.score.ft;
+      if (!Array.isArray(ft) || ft.length < 2) continue;
+      const s1 = ft[0], s2 = ft[1];
+      if (s1 === null || s2 === null) continue;
+
+      const round = mapRound(m.round);
+      if (!round) continue;
+
+      const t1 = normalizeTeam(m.team1);
+      const t2 = normalizeTeam(m.team2);
+      if (!t1 || !t2) continue;
+
+      apiResults.push({ round, team1: t1, team2: t2, score1: s1, score2: s2, source: 'api' });
+    }
+
+    const now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    status.textContent = `Last synced ${now}`;
+    document.getElementById('sub-line').textContent =
+      apiResults.length > 0
+        ? `${allResults().length} results loaded · updates every 10 min`
+        : 'Tournament underway — no results yet';
+  } catch (e) {
+    status.textContent = 'Sync failed — showing manual data';
+    console.warn('openfootball fetch failed:', e);
+  }
+
+  btn.classList.remove('spinning');
+  renderAll();
+}
+
+// ─── COMBINE RESULTS ─────────────────────────────────────────────────────────
+// Manual entries override API entries for same matchup
+function allResults() {
+  const key = r => [r.team1, r.team2].sort().join('|') + '|' + r.round;
+  const manualKeys = new Set(manualResults.map(key));
+  const filtered = apiResults.filter(r => !manualKeys.has(key(r)));
+  return [...filtered, ...manualResults];
+}
+
+// ─── SCORING CALC ────────────────────────────────────────────────────────────
+function ownerOf(team) {
+  return POOL.find(p => p.teams.includes(team));
+}
+
+function calcScores() {
+  const pts = {}, wins = {};
+  POOL.forEach(p => { pts[p.name] = 0; wins[p.name] = 0; });
+
+  const results = allResults();
+  const advancedTeams = new Set();
+
+  results.forEach(r => {
+    const rp = ROUND_PTS[r.round] || { win:2, draw:1 };
+    const o1 = ownerOf(r.team1), o2 = ownerOf(r.team2);
+
+    if (r.round === 'Group Stage') {
+      if (r.score1 > r.score2) {
+        if (o1) { pts[o1.name] += rp.win; wins[o1.name]++; }
+      } else if (r.score2 > r.score1) {
+        if (o2) { pts[o2.name] += rp.win; wins[o2.name]++; }
+      } else {
+        if (o1) pts[o1.name] += rp.draw;
+        if (o2) pts[o2.name] += rp.draw;
+      }
+    } else {
+      const winner = r.score1 > r.score2 ? r.team1 : r.team2;
+      const loser  = r.score1 > r.score2 ? r.team2 : r.team1;
+      const owW = ownerOf(winner);
+      if (owW) { pts[owW.name] += rp.win; wins[owW.name]++; }
+
+      if (r.round === 'Final') {
+        const owL = ownerOf(loser);
+        if (owL) pts[owL.name] += RUNNER_UP_PTS;
+      }
+
+      // Advance bonus (both teams made it out of groups)
+      [winner, loser].forEach(t => {
+        if (!advancedTeams.has(t)) {
+          advancedTeams.add(t);
+          const ow = ownerOf(t);
+          if (ow) pts[ow.name] += ADVANCE_PTS;
+        }
+      });
+    }
+  });
+
+  return { pts, wins };
+}
+
+function getEliminated() {
+  const out = new Set();
+  allResults().forEach(r => {
+    if (r.round === 'Group Stage') return;
+    const loser = r.score1 > r.score2 ? r.team2 : r.team1;
+    out.add(loser);
+  });
+  return out;
+}
+
+function getChampion() {
+  const f = allResults().find(r => r.round === 'Final');
+  if (!f) return null;
+  return f.score1 > f.score2 ? f.team1 : f.team2;
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderStandings() {
+  const { pts, wins } = calcScores();
+  const elim = getEliminated();
+  const champ = getChampion();
+  const hasResults = allResults().length > 0;
+
+  const ranked = [...POOL].sort((a,b) => pts[b.name] - pts[a.name] || wins[b.name] - wins[a.name]);
+  const tbody = document.getElementById('standings-body');
+  tbody.innerHTML = '';
+
+  ranked.forEach((p, i) => {
+    const rank = i + 1;
+    const medal = rank===1 ? '🥇' : rank===2 ? '🥈' : rank===3 ? '🥉' : rank;
+    const rankClass = rank===1 ? 'rank-1' : rank===2 ? 'rank-2' : rank===3 ? 'rank-3' : 'rank-num';
+    const isLeader = rank === 1 && hasResults;
+
+    const teamsHtml = p.teams.map(t => {
+      let cls = 'badge';
+      if (t === champ) cls += ' champion';
+      else if (elim.has(t)) cls += ' out';
+      else if (hasResults) cls += ' alive';
+      return `<span class="${cls}">${t}</span>`;
+    }).join('');
+
+    tbody.innerHTML += `<tr>
+      <td><span class="${rankClass}">${medal}</span></td>
+      <td>
+        <div class="participant-name">${p.name}${isLeader ? '<span class="leader-tag">Leading</span>' : ''}</div>
+        <div class="teams-row">${teamsHtml}</div>
+      </td>
+      <td class="r"><span class="pts-val">${pts[p.name]}</span></td>
+      <td class="r"><span class="wins-val">${wins[p.name]}</span></td>
+      <td></td>
+    </tr>`;
+  });
+
+  // update sub-line
+  if (hasResults) {
+    document.getElementById('sub-line').textContent = `${allResults().length} results · live standings`;
+  }
+}
+
+function renderTeams() {
+  const { pts } = calcScores();
+  const elim = getEliminated();
+  const champ = getChampion();
+  const hasResults = allResults().length > 0;
+
+  const grid = document.getElementById('teams-grid');
+  grid.innerHTML = '';
+  POOL.forEach(p => {
+    const teamsHtml = p.teams.map(t => {
+      let cls = 'badge';
+      if (t === champ) cls += ' champion';
+      else if (elim.has(t)) cls += ' out';
+      else if (hasResults) cls += ' alive';
+      return `<span class="${cls}">${t}</span>`;
+    }).join('');
+
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-name">${p.name}</div>
+      <div class="card-pts">${pts[p.name]} pts</div>
+      <div class="card-teams">${teamsHtml}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function renderResults() {
+  const el = document.getElementById('results-list');
+  const results = allResults();
+
+  if (results.length === 0) {
+    el.innerHTML = '<p class="empty">No results yet. They\'ll appear here automatically once the tournament starts, or add them manually above.</p>';
+    return;
+  }
+
+  const ORDER = ['Group Stage','Round of 32','Round of 16','Quarterfinal','Semifinal','Final'];
+  let html = '';
+  ORDER.forEach(round => {
+    const group = results.filter(r => r.round === round);
+    if (!group.length) return;
+    html += `<div class="round-section"><div class="round-label">${round}</div><div class="match-cards">`;
+    group.forEach(r => {
+      const w = r.score1 > r.score2 ? r.team1 : r.score2 > r.score1 ? r.team2 : null;
+      const o1 = ownerOf(r.team1), o2 = ownerOf(r.team2);
+      const isManual = r.source !== 'api';
+      const manualIdx = isManual ? manualResults.indexOf(r) : -1;
+      const delBtn = isManual
+        ? `<button class="del-btn" onclick="deleteManual(${manualIdx})" title="Delete">×</button>`
+        : '';
+      html += `<div class="match-card">
+        ${delBtn}
+        <div class="match-teams">
+          <div class="match-team">
+            <span class="match-team-name ${w===r.team1?'winner':''}">${r.team1}</span>
+            <span class="match-score">${r.score1}</span>
+          </div>
+          <div class="match-team">
+            <span class="match-team-name ${w===r.team2?'winner':''}">${r.team2}</span>
+            <span class="match-score">${r.score2}</span>
+          </div>
+        </div>
+        <div class="match-owner">${o1 ? o1.name : '–'} vs ${o2 ? o2.name : '–'}${isManual ? ' · manual' : ''}</div>
+      </div>`;
+    });
+    html += '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+function renderAll() {
+  renderStandings();
+  renderTeams();
+  renderResults();
+}
+
+// ─── MANUAL RESULTS ──────────────────────────────────────────────────────────
+function openModal() {
+  const t1 = document.getElementById('m-t1');
+  const t2 = document.getElementById('m-t2');
+  t1.innerHTML = ALL_TEAMS.map(t => `<option>${t}</option>`).join('');
+  t2.innerHTML = ALL_TEAMS.map(t => `<option>${t}</option>`).join('');
+  t2.selectedIndex = 1;
+  document.getElementById('m-s1').value = 0;
+  document.getElementById('m-s2').value = 0;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function saveManual() {
+  const round  = document.getElementById('m-round').value;
+  const team1  = document.getElementById('m-t1').value;
+  const team2  = document.getElementById('m-t2').value;
+  const score1 = parseInt(document.getElementById('m-s1').value) || 0;
+  const score2 = parseInt(document.getElementById('m-s2').value) || 0;
+  if (team1 === team2) { alert('Pick two different teams.'); return; }
+  manualResults.push({ round, team1, team2, score1, score2, source: 'manual' });
+  localStorage.setItem('wc26_manual', JSON.stringify(manualResults));
+  closeModal();
+  renderAll();
+}
+
+function deleteManual(idx) {
+  manualResults.splice(idx, 1);
+  localStorage.setItem('wc26_manual', JSON.stringify(manualResults));
+  renderAll();
+}
+
+function clearManual() {
+  if (!confirm('Remove all manually added results?')) return;
+  manualResults = [];
+  localStorage.setItem('wc26_manual', JSON.stringify(manualResults));
+  renderAll();
+}
+
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+function showTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+renderAll(); // render with manual data immediately
+fetchScores(); // then fetch live data
+setInterval(fetchScores, 10 * 60 * 1000); // re-fetch every 10 min
+
+// Close modal on bg click
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+</script>
+</body>
+</html>
