@@ -25,6 +25,8 @@
     --red-bg: rgba(224,85,85,0.08);
     --blue: #4a9eff;
     --blue-bg: rgba(74,158,255,0.1);
+    --purple: #a78bfa;
+    --purple-bg: rgba(167,139,250,0.1);
     --radius: 10px;
     --radius-sm: 6px;
   }
@@ -38,20 +40,13 @@
     min-height: 100vh;
   }
 
-  .shell {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 24px 16px 60px;
-  }
+  .shell { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
 
   /* Header */
   .site-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 16px;
+    margin-bottom: 28px; flex-wrap: wrap;
   }
   .site-title { font-size: 22px; font-weight: 700; color: var(--text); }
   .site-sub { font-size: 13px; color: var(--text2); margin-top: 3px; }
@@ -68,8 +63,8 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .sync-status { font-size: 11px; color: var(--text3); }
 
-  /* Nav tabs */
-  .nav { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+  /* Nav */
+  .nav { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
   .nav-btn {
     background: none; border: none; color: var(--text2);
     font-size: 13px; font-weight: 500; padding: 8px 14px;
@@ -78,12 +73,17 @@
   }
   .nav-btn:hover { color: var(--text); }
   .nav-btn.active { color: var(--text); border-bottom-color: var(--blue); }
+  .nav-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    background: var(--purple); color: #fff;
+    padding: 1px 5px; border-radius: 20px; margin-left: 4px; vertical-align: middle;
+  }
 
   /* Panels */
   .panel { display: none; }
   .panel.active { display: block; }
 
-  /* Standings table */
+  /* Table */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; min-width: 500px; }
   thead th {
@@ -115,8 +115,8 @@
   .badge.alive { background: var(--green-bg); color: var(--green); border-color: rgba(62,207,142,0.25); }
   .badge.out { opacity: 0.35; text-decoration: line-through; }
   .badge.champion { background: rgba(245,200,66,0.12); color: var(--gold); border-color: rgba(245,200,66,0.3); }
+  .badge.traded-in { background: var(--purple-bg); color: var(--purple); border-color: rgba(167,139,250,0.25); }
 
-  /* Leader label */
   .leader-tag {
     display: inline-block; font-size: 10px; font-weight: 600;
     background: var(--blue-bg); color: var(--blue);
@@ -125,39 +125,33 @@
     vertical-align: middle; text-transform: uppercase; letter-spacing: 0.05em;
   }
 
-  /* Cards grid (teams view) */
+  /* Cards grid */
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-  .card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px;
-  }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
   .card-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
   .card-pts { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
   .card-teams { display: flex; flex-wrap: wrap; gap: 4px; }
 
-  /* Results panel */
-  .results-toolbar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+  /* Toolbar */
+  .toolbar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
   .add-btn {
     display: flex; align-items: center; gap: 6px;
     background: var(--blue); color: #fff; font-size: 13px; font-weight: 600;
-    padding: 8px 16px; border: none; border-radius: var(--radius-sm); cursor: pointer;
-    transition: opacity 0.15s;
+    padding: 8px 16px; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: opacity 0.15s;
   }
   .add-btn:hover { opacity: 0.88; }
+  .add-btn.purple { background: var(--purple); }
   .clear-btn {
     background: none; border: 1px solid var(--border); color: var(--text2);
     font-size: 12px; padding: 7px 12px; border-radius: var(--radius-sm); cursor: pointer;
   }
   .clear-btn:hover { border-color: var(--red); color: var(--red); }
 
+  /* Results */
   .round-section { margin-bottom: 24px; }
-  .round-label { font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.07em; color: var(--text3); margin-bottom: 10px; }
+  .round-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); margin-bottom: 10px; }
   .match-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap: 8px; }
-  .match-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 14px; position: relative;
-  }
+  .match-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; position: relative; }
   .match-teams { display: flex; flex-direction: column; gap: 6px; }
   .match-team { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .match-team-name { font-size: 13px; flex: 1; }
@@ -166,12 +160,42 @@
   .match-owner { font-size: 11px; color: var(--text3); margin-top: 7px; border-top: 1px solid var(--border); padding-top: 6px; }
   .del-btn {
     position: absolute; top: 8px; right: 8px; background: none; border: none;
-    color: var(--text3); cursor: pointer; font-size: 16px; line-height: 1;
-    padding: 2px 4px; border-radius: 4px;
+    color: var(--text3); cursor: pointer; font-size: 16px; line-height: 1; padding: 2px 4px; border-radius: 4px;
   }
   .del-btn:hover { color: var(--red); background: var(--red-bg); }
 
-  /* Scoring panel */
+  /* Trades */
+  .sync-notice {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 14px;
+    font-size: 12px; color: var(--text2); margin-bottom: 18px; line-height: 1.6;
+  }
+  .sync-notice strong { color: var(--text); }
+
+  .trade-list { display: flex; flex-direction: column; gap: 10px; }
+  .trade-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; position: relative;
+  }
+  .trade-card .trade-num {
+    font-size: 11px; font-weight: 700; color: var(--purple);
+    background: var(--purple-bg); border: 1px solid rgba(167,139,250,0.2);
+    padding: 2px 8px; border-radius: 20px; white-space: nowrap;
+  }
+  .trade-body { flex: 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+  .trade-person { font-weight: 600; }
+  .trade-team-out { color: var(--red); font-weight: 500; }
+  .trade-team-in  { color: var(--green); font-weight: 500; }
+  .trade-arrow { color: var(--text3); font-size: 18px; }
+  .trade-date { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  .trade-del {
+    background: none; border: none; color: var(--text3); cursor: pointer;
+    font-size: 16px; padding: 2px 6px; border-radius: 4px;
+  }
+  .trade-del:hover { color: var(--red); background: var(--red-bg); }
+
+  /* Scoring */
   .score-key { max-width: 380px; }
   .score-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -190,7 +214,7 @@
   .modal-bg.open { display: flex; }
   .modal {
     background: var(--bg2); border: 1px solid var(--border2);
-    border-radius: var(--radius); padding: 24px; width: min(440px, 100%);
+    border-radius: var(--radius); padding: 24px; width: min(460px, 100%);
     max-height: 90vh; overflow-y: auto;
   }
   .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
@@ -214,24 +238,31 @@
     padding: 8px 18px; border: none; border-radius: var(--radius-sm); cursor: pointer;
   }
   .btn-save:hover { opacity: 0.88; }
+  .btn-save.purple { background: var(--purple); }
 
-  /* Empty state */
+  /* Trade modal helpers */
+  .trade-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 4px 0 14px; color: var(--text3); font-size: 12px;
+  }
+  .trade-divider::before, .trade-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .trade-preview {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 12px; font-size: 13px;
+    color: var(--text2); margin-bottom: 14px; min-height: 38px;
+    line-height: 1.6;
+  }
+
   .empty { color: var(--text3); font-size: 14px; padding: 20px 0; }
 
-  /* Auto-sync notice */
-  .sync-notice {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 10px 14px;
-    font-size: 12px; color: var(--text2); margin-bottom: 18px; line-height: 1.6;
-  }
-  .sync-notice strong { color: var(--text); }
-
-  /* Mobile tweaks */
   @media (max-width: 540px) {
     .site-header { flex-direction: column; }
     .sync-block { align-items: flex-start; }
     thead th:nth-child(4) { display: none; }
     tbody td:nth-child(4) { display: none; }
+    .trade-body { flex-direction: column; align-items: flex-start; gap: 4px; }
   }
 </style>
 </head>
@@ -256,6 +287,7 @@
     <button class="nav-btn active" onclick="showTab('standings',this)">Standings</button>
     <button class="nav-btn" onclick="showTab('teams',this)">Teams</button>
     <button class="nav-btn" onclick="showTab('results',this)">Results</button>
+    <button class="nav-btn" onclick="showTab('trades',this)">Trades <span class="nav-badge" id="trade-count" style="display:none"></span></button>
     <button class="nav-btn" onclick="showTab('scoring',this)">Scoring</button>
   </nav>
 
@@ -285,16 +317,30 @@
   <!-- RESULTS -->
   <div class="panel" id="panel-results">
     <div class="sync-notice">
-      <strong>Auto-sync:</strong> Scores pull from the openfootball open-source dataset and refresh every 10 minutes. You can also add results manually below — manual entries take priority.
+      <strong>Auto-sync:</strong> Scores pull from the openfootball open-source dataset and refresh every 10 minutes. You can also add results manually — manual entries take priority over synced data.
     </div>
-    <div class="results-toolbar">
-      <button class="add-btn" onclick="openModal()">
+    <div class="toolbar">
+      <button class="add-btn" onclick="openResultModal()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Add result manually
       </button>
       <button class="clear-btn" onclick="clearManual()">Clear manual entries</button>
     </div>
     <div id="results-list"></div>
+  </div>
+
+  <!-- TRADES -->
+  <div class="panel" id="panel-trades">
+    <div class="sync-notice">
+      <strong>Trades</strong> swap a team between two participants. They take effect immediately and are reflected in standings and rosters. All trades are logged here for transparency.
+    </div>
+    <div class="toolbar">
+      <button class="add-btn purple" onclick="openTradeModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Log a trade
+      </button>
+    </div>
+    <div id="trades-list"></div>
   </div>
 
   <!-- SCORING -->
@@ -319,7 +365,7 @@
 </div>
 
 <!-- ADD RESULT MODAL -->
-<div class="modal-bg" id="modal">
+<div class="modal-bg" id="result-modal">
   <div class="modal">
     <h3>Add result manually</h3>
     <div class="field">
@@ -333,28 +379,48 @@
         <option value="Final">Final</option>
       </select>
     </div>
-    <div class="field">
-      <label>Team 1</label>
-      <select id="m-t1"></select>
-    </div>
+    <div class="field"><label>Team 1</label><select id="m-t1"></select></div>
     <div class="score-fields">
       <div class="field"><label>Score 1</label><input type="number" id="m-s1" min="0" value="0"></div>
       <div class="field"><label>Score 2</label><input type="number" id="m-s2" min="0" value="0"></div>
     </div>
-    <div class="field">
-      <label>Team 2</label>
-      <select id="m-t2"></select>
-    </div>
+    <div class="field"><label>Team 2</label><select id="m-t2"></select></div>
     <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveManual()">Save</button>
+      <button class="btn-cancel" onclick="closeResultModal()">Cancel</button>
+      <button class="btn-save" onclick="saveManual()">Save result</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRADE MODAL -->
+<div class="modal-bg" id="trade-modal">
+  <div class="modal">
+    <h3>🔀 Log a trade</h3>
+    <p style="font-size:13px; color:var(--text2); margin-bottom:18px;">Select each participant and the team they're giving up. The teams will be swapped between them.</p>
+
+    <div style="font-size:12px; font-weight:600; color:var(--purple); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">Participant A</div>
+    <div class="field"><label>Participant</label><select id="tr-p1" onchange="updateTradeTeams()"></select></div>
+    <div class="field"><label>Gives up</label><select id="tr-t1" onchange="updateTradePreview()"></select></div>
+
+    <div class="trade-divider">swaps with</div>
+
+    <div style="font-size:12px; font-weight:600; color:var(--purple); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">Participant B</div>
+    <div class="field"><label>Participant</label><select id="tr-p2" onchange="updateTradeTeams()"></select></div>
+    <div class="field"><label>Gives up</label><select id="tr-t2" onchange="updateTradePreview()"></select></div>
+
+    <div style="font-size:12px; color:var(--text2); margin-bottom:6px; font-weight:500;">Trade summary</div>
+    <div class="trade-preview" id="trade-preview">Select participants and teams above.</div>
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeTradeModal()">Cancel</button>
+      <button class="btn-save purple" onclick="confirmTrade()">Confirm trade</button>
     </div>
   </div>
 </div>
 
 <script>
-// ─── POOL DATA ──────────────────────────────────────────────────────────────
-const POOL = [
+// ─── ORIGINAL POOL DATA ───────────────────────────────────────────────────────
+const ORIGINAL_POOL = [
   { name:'Geoff',   teams:['Australia','Paraguay','Haiti','Panama','Congo DR'] },
   { name:'Nikki',   teams:['Austria','Turkey','Bosnia','Belgium'] },
   { name:'Matt',    teams:['Ecuador','Ghana','Japan','Brazil'] },
@@ -369,53 +435,70 @@ const POOL = [
   { name:'Shady',   teams:['France','Morocco','Jordan','Iraq'] },
 ];
 
-// Map openfootball team name variants → pool names
+// Alias map for openfootball team name variants
 const ALIASES = {
-  'United States': 'USA',
-  'US': 'USA',
-  'Korea Republic': 'South Korea',
-  'Republic of Korea': 'South Korea',
-  'South Korea': 'South Korea',
-  'Ivory Coast': 'Ivory Coast',
-  "Côte d'Ivoire": 'Ivory Coast',
-  'Cote d\'Ivoire': 'Ivory Coast',
-  'DR Congo': 'Congo DR',
-  'Congo DR': 'Congo DR',
-  'Democratic Republic of Congo': 'Congo DR',
-  'Bosnia and Herzegovina': 'Bosnia',
-  'Bosnia & Herzegovina': 'Bosnia',
-  'Bosnia-Herzegovina': 'Bosnia',
-  'Cape Verde': 'Cape Verde',
-  'Cabo Verde': 'Cape Verde',
-  'Curacao': 'Curaçao',
-  'Curaçao': 'Curaçao',
-  'Czech Republic': 'Czechia',
-  'Czechia': 'Czechia',
-  'New Zealand': 'New Zealand',
-  'Saudi Arabia': 'Saudi Arabia',
-  'South Africa': 'South Africa',
+  'United States':'USA','US':'USA',
+  'Korea Republic':'South Korea','Republic of Korea':'South Korea',
+  "Côte d'Ivoire":'Ivory Coast',"Cote d'Ivoire":'Ivory Coast',
+  'DR Congo':'Congo DR','Democratic Republic of Congo':'Congo DR',
+  'Bosnia and Herzegovina':'Bosnia','Bosnia & Herzegovina':'Bosnia','Bosnia-Herzegovina':'Bosnia',
+  'Cabo Verde':'Cape Verde',
+  'Curacao':'Curaçao',
+  'Czech Republic':'Czechia',
 };
-
-const ALL_TEAMS = [...new Set(POOL.flatMap(p => p.teams))].sort();
-
-// ─── SCORING RULES ───────────────────────────────────────────────────────────
-const ROUND_PTS = {
-  'Group Stage':   { win:2, draw:1 },
-  'Round of 32':   { win:3 },
-  'Round of 16':   { win:4 },
-  'Quarterfinal':  { win:5 },
-  'Semifinal':     { win:6 },
-  'Final':         { win:10 },
-};
-const ADVANCE_PTS  = 3;
-const RUNNER_UP_PTS = 5;
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
-let apiResults  = [];   // from openfootball
-let manualResults = JSON.parse(localStorage.getItem('wc26_manual') || '[]');
+let trades        = JSON.parse(localStorage.getItem('wc26_trades')  || '[]');
+let manualResults = JSON.parse(localStorage.getItem('wc26_manual')  || '[]');
+let apiResults    = [];
 
-// ─── OPENFOOTBALL FETCH ──────────────────────────────────────────────────────
-// Maps openfootball round strings to our round keys
+// ─── COMPUTED POOL (trades applied) ──────────────────────────────────────────
+function getPool() {
+  // Deep clone original
+  const pool = ORIGINAL_POOL.map(p => ({ name: p.name, teams: [...p.teams], tradedIn: [] }));
+  const byName = name => pool.find(p => p.name === name);
+
+  trades.forEach(t => {
+    const pA = byName(t.personA);
+    const pB = byName(t.personB);
+    if (!pA || !pB) return;
+
+    // Remove teamA from pA, add to pB
+    const idxA = pA.teams.indexOf(t.teamA);
+    if (idxA !== -1) pA.teams.splice(idxA, 1);
+    pB.teams.push(t.teamA);
+    pB.tradedIn.push(t.teamA);
+
+    // Remove teamB from pB, add to pA
+    const idxB = pB.teams.indexOf(t.teamB);
+    if (idxB !== -1) pB.teams.splice(idxB, 1);
+    pA.teams.push(t.teamB);
+    pA.tradedIn.push(t.teamB);
+  });
+
+  return pool;
+}
+
+function allTeams() {
+  return [...new Set(getPool().flatMap(p => p.teams))].sort();
+}
+
+// ─── SCORING ─────────────────────────────────────────────────────────────────
+const ROUND_PTS = {
+  'Group Stage':  { win:2, draw:1 },
+  'Round of 32':  { win:3 },
+  'Round of 16':  { win:4 },
+  'Quarterfinal': { win:5 },
+  'Semifinal':    { win:6 },
+  'Final':        { win:10 },
+};
+const ADVANCE_PTS   = 3;
+const RUNNER_UP_PTS = 5;
+
+function ownerOf(team, pool) {
+  return pool.find(p => p.teams.includes(team));
+}
+
 function mapRound(r) {
   if (!r) return null;
   const s = r.toLowerCase();
@@ -423,113 +506,50 @@ function mapRound(r) {
   if (s.includes('round of 32') || s.includes('round of thirty')) return 'Round of 32';
   if (s.includes('round of 16') || s.includes('last 16') || s.includes('round of sixteen')) return 'Round of 16';
   if (s.includes('quarter')) return 'Quarterfinal';
-  if (s.includes('semi')) return 'Semifinal';
-  if (s.includes('final')) return 'Final';
+  if (s.includes('semi'))    return 'Semifinal';
+  if (s.includes('final'))   return 'Final';
   return null;
 }
 
 function normalizeTeam(name) {
   if (!name) return null;
-  const trimmed = name.trim();
-  return ALIASES[trimmed] || trimmed;
+  const t = name.trim();
+  return ALIASES[t] || t;
 }
 
-async function fetchScores() {
-  const btn = document.getElementById('sync-btn');
-  const status = document.getElementById('sync-status');
-  btn.classList.add('spinning');
-  status.textContent = 'Fetching scores…';
-
-  try {
-    const url = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json';
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const matches = data.matches || [];
-
-    apiResults = [];
-    for (const m of matches) {
-      if (!m.score) continue; // not yet played
-      const ft = m.score.ft;
-      if (!Array.isArray(ft) || ft.length < 2) continue;
-      const s1 = ft[0], s2 = ft[1];
-      if (s1 === null || s2 === null) continue;
-
-      const round = mapRound(m.round);
-      if (!round) continue;
-
-      const t1 = normalizeTeam(m.team1);
-      const t2 = normalizeTeam(m.team2);
-      if (!t1 || !t2) continue;
-
-      apiResults.push({ round, team1: t1, team2: t2, score1: s1, score2: s2, source: 'api' });
-    }
-
-    const now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-    status.textContent = `Last synced ${now}`;
-    document.getElementById('sub-line').textContent =
-      apiResults.length > 0
-        ? `${allResults().length} results loaded · updates every 10 min`
-        : 'Tournament underway — no results yet';
-  } catch (e) {
-    status.textContent = 'Sync failed — showing manual data';
-    console.warn('openfootball fetch failed:', e);
-  }
-
-  btn.classList.remove('spinning');
-  renderAll();
-}
-
-// ─── COMBINE RESULTS ─────────────────────────────────────────────────────────
-// Manual entries override API entries for same matchup
 function allResults() {
-  const key = r => [r.team1, r.team2].sort().join('|') + '|' + r.round;
+  const key = r => [r.team1,r.team2].sort().join('|')+'|'+r.round;
   const manualKeys = new Set(manualResults.map(key));
-  const filtered = apiResults.filter(r => !manualKeys.has(key(r)));
-  return [...filtered, ...manualResults];
+  return [...apiResults.filter(r => !manualKeys.has(key(r))), ...manualResults];
 }
 
-// ─── SCORING CALC ────────────────────────────────────────────────────────────
-function ownerOf(team) {
-  return POOL.find(p => p.teams.includes(team));
-}
-
-function calcScores() {
+function calcScores(pool) {
   const pts = {}, wins = {};
-  POOL.forEach(p => { pts[p.name] = 0; wins[p.name] = 0; });
-
-  const results = allResults();
+  pool.forEach(p => { pts[p.name] = 0; wins[p.name] = 0; });
   const advancedTeams = new Set();
 
-  results.forEach(r => {
+  allResults().forEach(r => {
     const rp = ROUND_PTS[r.round] || { win:2, draw:1 };
-    const o1 = ownerOf(r.team1), o2 = ownerOf(r.team2);
+    const o1 = ownerOf(r.team1, pool);
+    const o2 = ownerOf(r.team2, pool);
 
     if (r.round === 'Group Stage') {
-      if (r.score1 > r.score2) {
-        if (o1) { pts[o1.name] += rp.win; wins[o1.name]++; }
-      } else if (r.score2 > r.score1) {
-        if (o2) { pts[o2.name] += rp.win; wins[o2.name]++; }
-      } else {
-        if (o1) pts[o1.name] += rp.draw;
-        if (o2) pts[o2.name] += rp.draw;
-      }
+      if      (r.score1 > r.score2) { if (o1) { pts[o1.name] += rp.win; wins[o1.name]++; } }
+      else if (r.score2 > r.score1) { if (o2) { pts[o2.name] += rp.win; wins[o2.name]++; } }
+      else { if (o1) pts[o1.name] += rp.draw; if (o2) pts[o2.name] += rp.draw; }
     } else {
       const winner = r.score1 > r.score2 ? r.team1 : r.team2;
       const loser  = r.score1 > r.score2 ? r.team2 : r.team1;
-      const owW = ownerOf(winner);
+      const owW = ownerOf(winner, pool);
       if (owW) { pts[owW.name] += rp.win; wins[owW.name]++; }
-
       if (r.round === 'Final') {
-        const owL = ownerOf(loser);
+        const owL = ownerOf(loser, pool);
         if (owL) pts[owL.name] += RUNNER_UP_PTS;
       }
-
-      // Advance bonus (both teams made it out of groups)
       [winner, loser].forEach(t => {
         if (!advancedTeams.has(t)) {
           advancedTeams.add(t);
-          const ow = ownerOf(t);
+          const ow = ownerOf(t, pool);
           if (ow) pts[ow.name] += ADVANCE_PTS;
         }
       });
@@ -543,8 +563,7 @@ function getEliminated() {
   const out = new Set();
   allResults().forEach(r => {
     if (r.round === 'Group Stage') return;
-    const loser = r.score1 > r.score2 ? r.team2 : r.team1;
-    out.add(loser);
+    out.add(r.score1 > r.score2 ? r.team2 : r.team1);
   });
   return out;
 }
@@ -555,35 +574,71 @@ function getChampion() {
   return f.score1 > f.score2 ? f.team1 : f.team2;
 }
 
+// ─── API FETCH ────────────────────────────────────────────────────────────────
+async function fetchScores() {
+  const btn    = document.getElementById('sync-btn');
+  const status = document.getElementById('sync-status');
+  btn.classList.add('spinning');
+  status.textContent = 'Fetching scores…';
+  try {
+    const res  = await fetch('https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    apiResults = [];
+    for (const m of (data.matches || [])) {
+      if (!m.score) continue;
+      const ft = m.score.ft;
+      if (!Array.isArray(ft) || ft.length < 2 || ft[0] === null) continue;
+      const round = mapRound(m.round);
+      if (!round) continue;
+      const t1 = normalizeTeam(m.team1), t2 = normalizeTeam(m.team2);
+      if (!t1 || !t2) continue;
+      apiResults.push({ round, team1:t1, team2:t2, score1:ft[0], score2:ft[1], source:'api' });
+    }
+    const now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    status.textContent = `Last synced ${now}`;
+    document.getElementById('sub-line').textContent =
+      allResults().length > 0
+        ? `${allResults().length} results · live standings`
+        : 'Tournament underway — no results yet';
+  } catch(e) {
+    status.textContent = 'Sync failed — showing manual data';
+  }
+  btn.classList.remove('spinning');
+  renderAll();
+}
+
 // ─── RENDER ──────────────────────────────────────────────────────────────────
 function renderStandings() {
-  const { pts, wins } = calcScores();
+  const pool = getPool();
+  const { pts, wins } = calcScores(pool);
   const elim = getEliminated();
   const champ = getChampion();
   const hasResults = allResults().length > 0;
 
-  const ranked = [...POOL].sort((a,b) => pts[b.name] - pts[a.name] || wins[b.name] - wins[a.name]);
+  const ranked = [...pool].sort((a,b) => pts[b.name]-pts[a.name] || wins[b.name]-wins[a.name]);
   const tbody = document.getElementById('standings-body');
   tbody.innerHTML = '';
 
   ranked.forEach((p, i) => {
     const rank = i + 1;
-    const medal = rank===1 ? '🥇' : rank===2 ? '🥈' : rank===3 ? '🥉' : rank;
-    const rankClass = rank===1 ? 'rank-1' : rank===2 ? 'rank-2' : rank===3 ? 'rank-3' : 'rank-num';
-    const isLeader = rank === 1 && hasResults;
+    const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const rc = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'rank-num';
 
     const teamsHtml = p.teams.map(t => {
       let cls = 'badge';
-      if (t === champ) cls += ' champion';
-      else if (elim.has(t)) cls += ' out';
-      else if (hasResults) cls += ' alive';
-      return `<span class="${cls}">${t}</span>`;
+      const isTraded = p.tradedIn.includes(t);
+      if (t === champ)       cls += ' champion';
+      else if (elim.has(t))  cls += ' out';
+      else if (isTraded)     cls += ' traded-in';
+      else if (hasResults)   cls += ' alive';
+      return `<span class="${cls}" title="${isTraded ? 'Acquired via trade' : ''}">${t}</span>`;
     }).join('');
 
     tbody.innerHTML += `<tr>
-      <td><span class="${rankClass}">${medal}</span></td>
+      <td><span class="${rc}">${medal}</span></td>
       <td>
-        <div class="participant-name">${p.name}${isLeader ? '<span class="leader-tag">Leading</span>' : ''}</div>
+        <div class="participant-name">${p.name}${rank===1&&hasResults?'<span class="leader-tag">Leading</span>':''}</div>
         <div class="teams-row">${teamsHtml}</div>
       </td>
       <td class="r"><span class="pts-val">${pts[p.name]}</span></td>
@@ -591,34 +646,31 @@ function renderStandings() {
       <td></td>
     </tr>`;
   });
-
-  // update sub-line
-  if (hasResults) {
-    document.getElementById('sub-line').textContent = `${allResults().length} results · live standings`;
-  }
 }
 
 function renderTeams() {
-  const { pts } = calcScores();
+  const pool = getPool();
+  const { pts } = calcScores(pool);
   const elim = getEliminated();
   const champ = getChampion();
   const hasResults = allResults().length > 0;
 
   const grid = document.getElementById('teams-grid');
   grid.innerHTML = '';
-  POOL.forEach(p => {
+  pool.forEach(p => {
     const teamsHtml = p.teams.map(t => {
       let cls = 'badge';
-      if (t === champ) cls += ' champion';
+      const isTraded = p.tradedIn.includes(t);
+      if (t === champ)      cls += ' champion';
       else if (elim.has(t)) cls += ' out';
-      else if (hasResults) cls += ' alive';
+      else if (isTraded)    cls += ' traded-in';
+      else if (hasResults)  cls += ' alive';
       return `<span class="${cls}">${t}</span>`;
     }).join('');
-
     const div = document.createElement('div');
     div.className = 'card';
     div.innerHTML = `<div class="card-name">${p.name}</div>
-      <div class="card-pts">${pts[p.name]} pts</div>
+      <div class="card-pts">${pts[p.name]} pts · ${p.teams.length} teams</div>
       <div class="card-teams">${teamsHtml}</div>`;
     grid.appendChild(div);
   });
@@ -627,9 +679,10 @@ function renderTeams() {
 function renderResults() {
   const el = document.getElementById('results-list');
   const results = allResults();
+  const pool = getPool();
 
-  if (results.length === 0) {
-    el.innerHTML = '<p class="empty">No results yet. They\'ll appear here automatically once the tournament starts, or add them manually above.</p>';
+  if (!results.length) {
+    el.innerHTML = '<p class="empty">No results yet. They\'ll appear automatically once the tournament starts, or add them manually above.</p>';
     return;
   }
 
@@ -640,13 +693,11 @@ function renderResults() {
     if (!group.length) return;
     html += `<div class="round-section"><div class="round-label">${round}</div><div class="match-cards">`;
     group.forEach(r => {
-      const w = r.score1 > r.score2 ? r.team1 : r.score2 > r.score1 ? r.team2 : null;
-      const o1 = ownerOf(r.team1), o2 = ownerOf(r.team2);
+      const w = r.score1>r.score2?r.team1:r.score2>r.score1?r.team2:null;
+      const o1 = ownerOf(r.team1, pool), o2 = ownerOf(r.team2, pool);
       const isManual = r.source !== 'api';
       const manualIdx = isManual ? manualResults.indexOf(r) : -1;
-      const delBtn = isManual
-        ? `<button class="del-btn" onclick="deleteManual(${manualIdx})" title="Delete">×</button>`
-        : '';
+      const delBtn = isManual ? `<button class="del-btn" onclick="deleteManual(${manualIdx})" title="Delete">×</button>` : '';
       html += `<div class="match-card">
         ${delBtn}
         <div class="match-teams">
@@ -659,7 +710,7 @@ function renderResults() {
             <span class="match-score">${r.score2}</span>
           </div>
         </div>
-        <div class="match-owner">${o1 ? o1.name : '–'} vs ${o2 ? o2.name : '–'}${isManual ? ' · manual' : ''}</div>
+        <div class="match-owner">${o1?o1.name:'–'} vs ${o2?o2.name:'–'}${isManual?' · manual':''}</div>
       </div>`;
     });
     html += '</div></div>';
@@ -667,24 +718,59 @@ function renderResults() {
   el.innerHTML = html;
 }
 
+function renderTrades() {
+  const el = document.getElementById('trades-list');
+  const badge = document.getElementById('trade-count');
+
+  if (!trades.length) {
+    badge.style.display = 'none';
+    el.innerHTML = '<p class="empty">No trades logged yet. Use the button above to record one.</p>';
+    return;
+  }
+
+  badge.style.display = 'inline';
+  badge.textContent = trades.length;
+
+  const html = trades.map((t, i) => `
+    <div class="trade-card">
+      <span class="trade-num">Trade #${i+1}</span>
+      <div class="trade-body">
+        <span class="trade-person">${t.personA}</span>
+        <span>gives</span>
+        <span class="trade-team-out">${t.teamA}</span>
+        <span class="trade-arrow">⇄</span>
+        <span class="trade-person">${t.personB}</span>
+        <span>gives</span>
+        <span class="trade-team-out">${t.teamB}</span>
+      </div>
+      <span class="trade-date">${t.date}</span>
+      <button class="trade-del" onclick="undoTrade(${i})" title="Undo trade">×</button>
+    </div>
+  `).join('');
+
+  el.innerHTML = `<div class="trade-list">${html}</div>`;
+}
+
 function renderAll() {
   renderStandings();
   renderTeams();
   renderResults();
+  renderTrades();
 }
 
-// ─── MANUAL RESULTS ──────────────────────────────────────────────────────────
-function openModal() {
+// ─── RESULT MODAL ─────────────────────────────────────────────────────────────
+function openResultModal() {
+  const teams = allTeams();
   const t1 = document.getElementById('m-t1');
   const t2 = document.getElementById('m-t2');
-  t1.innerHTML = ALL_TEAMS.map(t => `<option>${t}</option>`).join('');
-  t2.innerHTML = ALL_TEAMS.map(t => `<option>${t}</option>`).join('');
+  t1.innerHTML = teams.map(t => `<option>${t}</option>`).join('');
+  t2.innerHTML = teams.map(t => `<option>${t}</option>`).join('');
   t2.selectedIndex = 1;
   document.getElementById('m-s1').value = 0;
   document.getElementById('m-s2').value = 0;
-  document.getElementById('modal').classList.add('open');
+  document.getElementById('result-modal').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeResultModal() { document.getElementById('result-modal').classList.remove('open'); }
 
 function saveManual() {
   const round  = document.getElementById('m-round').value;
@@ -693,9 +779,9 @@ function saveManual() {
   const score1 = parseInt(document.getElementById('m-s1').value) || 0;
   const score2 = parseInt(document.getElementById('m-s2').value) || 0;
   if (team1 === team2) { alert('Pick two different teams.'); return; }
-  manualResults.push({ round, team1, team2, score1, score2, source: 'manual' });
+  manualResults.push({ round, team1, team2, score1, score2, source:'manual' });
   localStorage.setItem('wc26_manual', JSON.stringify(manualResults));
-  closeModal();
+  closeResultModal();
   renderAll();
 }
 
@@ -712,6 +798,84 @@ function clearManual() {
   renderAll();
 }
 
+// ─── TRADE MODAL ──────────────────────────────────────────────────────────────
+function openTradeModal() {
+  const pool = getPool();
+  const names = pool.map(p => p.name);
+
+  const p1 = document.getElementById('tr-p1');
+  const p2 = document.getElementById('tr-p2');
+  p1.innerHTML = names.map(n => `<option>${n}</option>`).join('');
+  p2.innerHTML = names.map(n => `<option>${n}</option>`).join('');
+  p2.selectedIndex = 1;
+
+  updateTradeTeams();
+  document.getElementById('trade-modal').classList.add('open');
+}
+function closeTradeModal() { document.getElementById('trade-modal').classList.remove('open'); }
+
+function updateTradeTeams() {
+  const pool = getPool();
+  const n1 = document.getElementById('tr-p1').value;
+  const n2 = document.getElementById('tr-p2').value;
+
+  const t1sel = document.getElementById('tr-t1');
+  const t2sel = document.getElementById('tr-t2');
+
+  const p1 = pool.find(p => p.name === n1);
+  const p2 = pool.find(p => p.name === n2);
+
+  t1sel.innerHTML = (p1 ? p1.teams : []).map(t => `<option>${t}</option>`).join('');
+  t2sel.innerHTML = (p2 ? p2.teams : []).map(t => `<option>${t}</option>`).join('');
+
+  updateTradePreview();
+}
+
+function updateTradePreview() {
+  const n1  = document.getElementById('tr-p1').value;
+  const n2  = document.getElementById('tr-p2').value;
+  const t1  = document.getElementById('tr-t1').value;
+  const t2  = document.getElementById('tr-t2').value;
+  const pre = document.getElementById('trade-preview');
+
+  if (!n1 || !n2 || !t1 || !t2) {
+    pre.textContent = 'Select participants and teams above.';
+    return;
+  }
+  if (n1 === n2) {
+    pre.textContent = '⚠️ Pick two different participants.';
+    return;
+  }
+  pre.innerHTML = `<strong>${n1}</strong> gives <span style="color:var(--red)">${t1}</span> → gets <span style="color:var(--green)">${t2}</span><br>
+  <strong>${n2}</strong> gives <span style="color:var(--red)">${t2}</span> → gets <span style="color:var(--green)">${t1}</span>`;
+}
+
+function confirmTrade() {
+  const personA = document.getElementById('tr-p1').value;
+  const personB = document.getElementById('tr-p2').value;
+  const teamA   = document.getElementById('tr-t1').value;
+  const teamB   = document.getElementById('tr-t2').value;
+
+  if (personA === personB) { alert('Pick two different participants.'); return; }
+  if (!teamA || !teamB)    { alert('Both participants must have at least one team.'); return; }
+  if (teamA === teamB)     { alert('The same team can\'t be traded.'); return; }
+
+  const date = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  trades.push({ personA, personB, teamA, teamB, date });
+  localStorage.setItem('wc26_trades', JSON.stringify(trades));
+
+  closeTradeModal();
+  renderAll();
+}
+
+function undoTrade(idx) {
+  const t = trades[idx];
+  if (!confirm(`Undo trade #${idx+1}?\n${t.personA} ⇄ ${t.personB} (${t.teamA} / ${t.teamB})`)) return;
+  trades.splice(idx, 1);
+  localStorage.setItem('wc26_trades', JSON.stringify(trades));
+  renderAll();
+}
+
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 function showTab(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -721,13 +885,15 @@ function showTab(name, btn) {
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
-renderAll(); // render with manual data immediately
-fetchScores(); // then fetch live data
-setInterval(fetchScores, 10 * 60 * 1000); // re-fetch every 10 min
+renderAll();
+fetchScores();
+setInterval(fetchScores, 10 * 60 * 1000);
 
-// Close modal on bg click
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal')) closeModal();
+document.getElementById('result-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('result-modal')) closeResultModal();
+});
+document.getElementById('trade-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('trade-modal')) closeTradeModal();
 });
 </script>
 </body>
