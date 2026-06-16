@@ -424,13 +424,13 @@ const ORIGINAL_POOL = [
   { name:'Geoff',   teams:['Australia','Paraguay','Haiti','Panama','Congo DR'] },
   { name:'Nikki',   teams:['Austria','Turkey','Bosnia','Belgium'] },
   { name:'Matt',    teams:['Ecuador','Ghana','Japan','Brazil'] },
-  { name:'Gabe',    teams:['Iran','Tunisia','Germany','Egypt'] },
+  { name:'Gabe',    teams:['Iran','Egypt','Croatia','Scotland'] },
   { name:'David',   teams:['Qatar','Algeria','England','Norway'] },
   { name:'Brandon', teams:['Spain','Curaçao','Uruguay','Uzbekistan'] },
   { name:'Steph',   teams:['Sweden','Colombia','Cape Verde','Portugal'] },
   { name:'Brendan', teams:['Switzerland','Saudi Arabia','South Africa','Canada'] },
   { name:'Pax',     teams:['Netherlands','Mexico','New Zealand'] },
-  { name:'Blake',   teams:['USA','Croatia','South Korea','Scotland'] },
+  { name:'Blake',   teams:['USA','South Korea','Germany','Tunisia'] },
   { name:'Bill',    teams:['Senegal','Ivory Coast','Argentina','Czechia'] },
   { name:'Shady',   teams:['France','Morocco','Jordan','Iraq'] },
 ];
@@ -448,28 +448,46 @@ const ALIASES = {
 };
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
-let trades        = JSON.parse(localStorage.getItem('wc26_trades')  || '[]');
+// Hardcoded trade history — update this whenever a new trade is made
+const HARDCODED_TRADES = [
+  { personA:'Blake', teamA:'Croatia',  personB:'Gabe', teamB:'Germany',  date:'Jun 16, 2026' },
+  { personA:'Blake', teamA:'Scotland', personB:'Gabe', teamB:'Tunisia',  date:'Jun 16, 2026' },
+];
+const _local = JSON.parse(localStorage.getItem('wc26_trades') || '[]');
+const _key = t => `${t.personA}|${t.teamA}|${t.personB}|${t.teamB}`;
+const _hardKeys = new Set(HARDCODED_TRADES.map(_key));
+let trades = [...HARDCODED_TRADES, ..._local.filter(t => !_hardKeys.has(_key(t)))];
 let manualResults = JSON.parse(localStorage.getItem('wc26_manual')  || '[]');
 let apiResults    = [];
 
 // ─── COMPUTED POOL (trades applied) ──────────────────────────────────────────
 function getPool() {
-  // Deep clone original
+  // ORIGINAL_POOL already reflects all hardcoded trades — clone it as the base
   const pool = ORIGINAL_POOL.map(p => ({ name: p.name, teams: [...p.teams], tradedIn: [] }));
   const byName = name => pool.find(p => p.name === name);
 
-  trades.forEach(t => {
+  // Mark hardcoded traded-in teams for purple badge display only (no roster mutation)
+  HARDCODED_TRADES.forEach(t => {
+    const pA = byName(t.personA);
+    const pB = byName(t.personB);
+    if (pA && pB) {
+      if (!pA.tradedIn.includes(t.teamB)) pA.tradedIn.push(t.teamB);
+      if (!pB.tradedIn.includes(t.teamA)) pB.tradedIn.push(t.teamA);
+    }
+  });
+
+  // Apply any new locally-logged trades not yet baked into ORIGINAL_POOL
+  const localOnly = trades.filter(t => !_hardKeys.has(_key(t)));
+  localOnly.forEach(t => {
     const pA = byName(t.personA);
     const pB = byName(t.personB);
     if (!pA || !pB) return;
 
-    // Remove teamA from pA, add to pB
     const idxA = pA.teams.indexOf(t.teamA);
     if (idxA !== -1) pA.teams.splice(idxA, 1);
     pB.teams.push(t.teamA);
     pB.tradedIn.push(t.teamA);
 
-    // Remove teamB from pB, add to pA
     const idxB = pB.teams.indexOf(t.teamB);
     if (idxB !== -1) pB.teams.splice(idxB, 1);
     pA.teams.push(t.teamB);
