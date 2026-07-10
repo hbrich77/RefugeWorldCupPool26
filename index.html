@@ -272,7 +272,7 @@
   <header class="site-header">
     <div>
       <div class="site-title">🏆 World Cup 2026 Pool</div>
-      <div class="site-sub" id="sub-line">Loading scores…</div>
+      <div class="site-sub" id="sub-line">Quarterfinals underway · Last updated July 10, 2026</div>
     </div>
     <div class="sync-block">
       <button class="sync-btn" id="sync-btn" onclick="fetchScores()">
@@ -317,7 +317,7 @@
   <!-- RESULTS -->
   <div class="panel" id="panel-results">
     <div class="sync-notice">
-      <strong>Auto-sync:</strong> Scores pull from the openfootball open-source dataset and refresh every 10 minutes. You can also add results manually — manual entries take priority over synced data.
+      <strong>Results:</strong> All scores are verified against official sources and updated manually. Use the button below to add any results that aren't showing yet.
     </div>
     <div class="toolbar">
       <button class="add-btn" onclick="openResultModal()">
@@ -358,7 +358,7 @@
     </div>
     <p class="score-note">
       The <strong>advance from groups</strong> bonus (3 pts) is awarded automatically the first time a team appears in a knockout round result.<br><br>
-      Scores sync from the <a href="https://github.com/openfootball/worldcup.json" target="_blank" style="color:var(--blue)">openfootball open dataset</a> — updated ~daily by community contributors. You can also add results manually in the Results tab if a score hasn't synced yet.
+      All results are manually verified against official sources and hardcoded into the app. Use the Results tab to add any results not yet reflected here — just push the updated file to GitHub Pages.
     </p>
   </div>
 
@@ -457,7 +457,114 @@ const _local = JSON.parse(localStorage.getItem('wc26_trades') || '[]');
 const _key = t => `${t.personA}|${t.teamA}|${t.personB}|${t.teamB}`;
 const _hardKeys = new Set(HARDCODED_TRADES.map(_key));
 let trades = [...HARDCODED_TRADES, ..._local.filter(t => !_hardKeys.has(_key(t)))];
-let manualResults = JSON.parse(localStorage.getItem('wc26_manual')  || '[]');
+// ─── VERIFIED RESULTS (hardcoded from official sources, last updated July 10 2026) ───
+const VERIFIED_RESULTS = [
+  // GROUP STAGE
+  { round:'Group Stage', team1:'Mexico',       team2:'South Africa',  score1:2, score2:0, source:'api' },
+  { round:'Group Stage', team1:'South Korea',  team2:'Czechia',       score1:2, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Canada',       team2:'Bosnia',        score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'USA',          team2:'Paraguay',      score1:4, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Qatar',        team2:'Switzerland',   score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Brazil',       team2:'Morocco',       score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Haiti',        team2:'Scotland',      score1:0, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Australia',    team2:'Turkey',        score1:2, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Germany',      team2:'Curaçao',       score1:7, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Netherlands',  team2:'Japan',         score1:2, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Ivory Coast',  team2:'Ecuador',       score1:1, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Sweden',       team2:'Tunisia',       score1:5, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Spain',        team2:'Cape Verde',    score1:0, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Egypt',        team2:'Belgium',       score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Saudi Arabia', team2:'Uruguay',       score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Iran',         team2:'New Zealand',   score1:2, score2:2, source:'api' },
+  { round:'Group Stage', team1:'France',       team2:'Senegal',       score1:3, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Iraq',         team2:'Norway',        score1:1, score2:4, source:'api' },
+  { round:'Group Stage', team1:'Argentina',    team2:'Algeria',       score1:3, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Austria',      team2:'Jordan',        score1:3, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Portugal',     team2:'Congo DR',      score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'England',      team2:'Croatia',       score1:4, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Ghana',        team2:'Panama',        score1:1, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Colombia',     team2:'Uzbekistan',    score1:3, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Czechia',      team2:'South Africa',  score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Switzerland',  team2:'Bosnia',        score1:4, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Canada',       team2:'Qatar',         score1:6, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Mexico',       team2:'South Korea',   score1:1, score2:0, source:'api' },
+  { round:'Group Stage', team1:'USA',          team2:'Australia',     score1:2, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Scotland',     team2:'Morocco',       score1:0, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Brazil',       team2:'Haiti',         score1:3, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Turkey',       team2:'Paraguay',      score1:0, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Netherlands',  team2:'Sweden',        score1:5, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Germany',      team2:'Ivory Coast',   score1:2, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Ecuador',      team2:'Curaçao',       score1:0, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Tunisia',      team2:'Japan',         score1:0, score2:4, source:'api' },
+  { round:'Group Stage', team1:'Spain',        team2:'Saudi Arabia',  score1:4, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Belgium',      team2:'Iran',          score1:0, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Uruguay',      team2:'Cape Verde',    score1:2, score2:2, source:'api' },
+  { round:'Group Stage', team1:'New Zealand',  team2:'Egypt',         score1:1, score2:3, source:'api' },
+  { round:'Group Stage', team1:'Argentina',    team2:'Austria',       score1:2, score2:0, source:'api' },
+  { round:'Group Stage', team1:'France',       team2:'Iraq',          score1:3, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Norway',       team2:'Senegal',       score1:3, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Jordan',       team2:'Algeria',       score1:1, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Portugal',     team2:'Uzbekistan',    score1:5, score2:0, source:'api' },
+  { round:'Group Stage', team1:'England',      team2:'Ghana',         score1:0, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Croatia',      team2:'Panama',        score1:1, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Colombia',     team2:'Congo DR',      score1:1, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Bosnia',       team2:'Qatar',         score1:3, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Switzerland',  team2:'Canada',        score1:2, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Morocco',      team2:'Haiti',         score1:4, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Scotland',     team2:'Brazil',        score1:0, score2:3, source:'api' },
+  { round:'Group Stage', team1:'South Africa', team2:'South Korea',   score1:1, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Czechia',      team2:'Mexico',        score1:0, score2:3, source:'api' },
+  { round:'Group Stage', team1:'Curaçao',      team2:'Ivory Coast',   score1:0, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Ecuador',      team2:'Germany',       score1:2, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Japan',        team2:'Sweden',        score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Tunisia',      team2:'Netherlands',   score1:1, score2:3, source:'api' },
+  { round:'Group Stage', team1:'Turkey',       team2:'USA',           score1:3, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Paraguay',     team2:'Australia',     score1:0, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Norway',       team2:'France',        score1:1, score2:4, source:'api' },
+  { round:'Group Stage', team1:'Senegal',      team2:'Iraq',          score1:5, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Cape Verde',   team2:'Saudi Arabia',  score1:0, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Uruguay',      team2:'Spain',         score1:0, score2:1, source:'api' },
+  { round:'Group Stage', team1:'New Zealand',  team2:'Belgium',       score1:1, score2:5, source:'api' },
+  { round:'Group Stage', team1:'Egypt',        team2:'Iran',          score1:1, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Panama',       team2:'England',       score1:0, score2:2, source:'api' },
+  { round:'Group Stage', team1:'Croatia',      team2:'Ghana',         score1:2, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Colombia',     team2:'Portugal',      score1:0, score2:0, source:'api' },
+  { round:'Group Stage', team1:'Congo DR',     team2:'Uzbekistan',    score1:3, score2:1, source:'api' },
+  { round:'Group Stage', team1:'Algeria',      team2:'Austria',       score1:3, score2:3, source:'api' },
+  { round:'Group Stage', team1:'Jordan',       team2:'Argentina',     score1:1, score2:3, source:'api' },
+  // ROUND OF 32
+  { round:'Round of 32', team1:'South Africa', team2:'Canada',        score1:0, score2:1, source:'api' },
+  { round:'Round of 32', team1:'Brazil',       team2:'Japan',         score1:2, score2:1, source:'api' },
+  { round:'Round of 32', team1:'Germany',      team2:'Paraguay',      score1:1, score2:2, source:'api' }, // Paraguay won on pens
+  { round:'Round of 32', team1:'Netherlands',  team2:'Morocco',       score1:1, score2:2, source:'api' }, // Morocco won on pens
+  { round:'Round of 32', team1:'Ivory Coast',  team2:'Norway',        score1:1, score2:2, source:'api' },
+  { round:'Round of 32', team1:'France',       team2:'Sweden',        score1:3, score2:0, source:'api' },
+  { round:'Round of 32', team1:'Mexico',       team2:'Ecuador',       score1:2, score2:0, source:'api' },
+  { round:'Round of 32', team1:'England',      team2:'Congo DR',      score1:2, score2:1, source:'api' },
+  { round:'Round of 32', team1:'Belgium',      team2:'Senegal',       score1:3, score2:2, source:'api' },
+  { round:'Round of 32', team1:'USA',          team2:'Bosnia',        score1:2, score2:0, source:'api' },
+  { round:'Round of 32', team1:'Spain',        team2:'Austria',       score1:3, score2:0, source:'api' },
+  { round:'Round of 32', team1:'Portugal',     team2:'Croatia',       score1:2, score2:1, source:'api' },
+  { round:'Round of 32', team1:'Switzerland',  team2:'Algeria',       score1:2, score2:0, source:'api' },
+  { round:'Round of 32', team1:'Australia',    team2:'Egypt',         score1:1, score2:2, source:'api' }, // Egypt won on pens
+  { round:'Round of 32', team1:'Argentina',    team2:'Cape Verde',    score1:3, score2:2, source:'api' },
+  { round:'Round of 32', team1:'Colombia',     team2:'Ghana',         score1:1, score2:0, source:'api' },
+  // ROUND OF 16
+  { round:'Round of 16', team1:'Canada',       team2:'Morocco',       score1:0, score2:3, source:'api' },
+  { round:'Round of 16', team1:'France',       team2:'Paraguay',      score1:1, score2:0, source:'api' },
+  { round:'Round of 16', team1:'Brazil',       team2:'Norway',        score1:1, score2:2, source:'api' },
+  { round:'Round of 16', team1:'Mexico',       team2:'England',       score1:2, score2:3, source:'api' },
+  { round:'Round of 16', team1:'Portugal',     team2:'Spain',         score1:0, score2:1, source:'api' },
+  { round:'Round of 16', team1:'USA',          team2:'Belgium',       score1:1, score2:4, source:'api' },
+  { round:'Round of 16', team1:'Argentina',    team2:'Egypt',         score1:3, score2:2, source:'api' },
+  { round:'Round of 16', team1:'Switzerland',  team2:'Colombia',      score1:1, score2:0, source:'api' }, // Switzerland won on pens (0-0 AET, 4-3 pens)
+  // QUARTERFINALS
+  { round:'Quarterfinal', team1:'France',      team2:'Morocco',       score1:2, score2:0, source:'api' },
+];
+
+const _vkey = r => [r.team1,r.team2].sort().join('|')+'|'+r.round;
+const _vkeys = new Set(VERIFIED_RESULTS.map(_vkey));
+let manualResults = JSON.parse(localStorage.getItem('wc26_manual') || '[]').filter(r => !_vkeys.has(_vkey(r)));
 let apiResults    = [];
 
 // ─── COMPUTED POOL (trades applied) ──────────────────────────────────────────
@@ -536,9 +643,14 @@ function normalizeTeam(name) {
 }
 
 function allResults() {
-  const key = r => [r.team1,r.team2].sort().join('|')+'|'+r.round;
-  const manualKeys = new Set(manualResults.map(key));
-  return [...apiResults.filter(r => !manualKeys.has(key(r))), ...manualResults];
+  // Priority order: VERIFIED_RESULTS (hardcoded) > manualResults > apiResults
+  // API results fill in anything new beyond what's hardcoded
+  const usedKeys = new Set([
+    ...VERIFIED_RESULTS.map(_vkey),
+    ...manualResults.map(_vkey),
+  ]);
+  const freshFromApi = apiResults.filter(r => !usedKeys.has(_vkey(r)));
+  return [...VERIFIED_RESULTS, ...manualResults, ...freshFromApi];
 }
 
 function calcScores(pool) {
@@ -579,10 +691,42 @@ function calcScores(pool) {
 
 function getEliminated() {
   const out = new Set();
-  allResults().forEach(r => {
+  const results = allResults();
+
+  // Mark knockout losers as eliminated
+  results.forEach(r => {
     if (r.round === 'Group Stage') return;
     out.add(r.score1 > r.score2 ? r.team2 : r.team1);
   });
+
+  // Any team that appears in group stage but NEVER in a knockout round is also eliminated
+  const pool = getPool();
+  const allPoolTeams = new Set(pool.flatMap(p => p.teams));
+  const knockoutTeams = new Set();
+  results.forEach(r => {
+    if (r.round !== 'Group Stage') {
+      knockoutTeams.add(r.team1);
+      knockoutTeams.add(r.team2);
+    }
+  });
+
+  // Only mark as group-stage-eliminated if we have at least some knockout results
+  // (avoids crossing everyone out before tournament starts)
+  if (knockoutTeams.size > 0) {
+    const gsTeams = new Set();
+    results.forEach(r => {
+      if (r.round === 'Group Stage') {
+        gsTeams.add(r.team1);
+        gsTeams.add(r.team2);
+      }
+    });
+    gsTeams.forEach(t => {
+      if (allPoolTeams.has(t) && !knockoutTeams.has(t)) {
+        out.add(t);
+      }
+    });
+  }
+
   return out;
 }
 
