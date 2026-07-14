@@ -272,14 +272,10 @@
   <header class="site-header">
     <div>
       <div class="site-title">🏆 World Cup 2026 Pool</div>
-      <div class="site-sub" id="sub-line">Quarterfinals underway · Last updated July 10, 2026</div>
+      <div class="site-sub" id="sub-line">Semifinals underway · 4 teams remain · Updated July 14, 2026</div>
     </div>
     <div class="sync-block">
-      <button class="sync-btn" id="sync-btn" onclick="fetchScores()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
-        Refresh scores
-      </button>
-      <div class="sync-status" id="sync-status">Auto-refreshes every 10 min</div>
+      <div class="sync-status" id="sync-status" style="font-size:12px; color:var(--text2)">📅 Updated July 14, 2026</div>
     </div>
   </header>
 
@@ -317,7 +313,7 @@
   <!-- RESULTS -->
   <div class="panel" id="panel-results">
     <div class="sync-notice">
-      <strong>Results:</strong> All scores are verified against official sources and updated manually. Use the button below to add any results that aren't showing yet.
+      <strong>Results:</strong> All scores are verified against official sources and hardcoded. Use the button below to add a result if needed — manual entries are visible only on your browser until the file is updated and pushed to GitHub.
     </div>
     <div class="toolbar">
       <button class="add-btn" onclick="openResultModal()">
@@ -559,13 +555,15 @@ const VERIFIED_RESULTS = [
   { round:'Round of 16', team1:'Argentina',    team2:'Egypt',         score1:3, score2:2, source:'api' },
   { round:'Round of 16', team1:'Switzerland',  team2:'Colombia',      score1:1, score2:0, source:'api' }, // Switzerland won on pens (0-0 AET, 4-3 pens)
   // QUARTERFINALS
-  { round:'Quarterfinal', team1:'France',      team2:'Morocco',       score1:2, score2:0, source:'api' },
+  { round:'Quarterfinal', team1:'France',      team2:'Morocco',       score1:2, score2:0, source:'verified' },
+  { round:'Quarterfinal', team1:'Spain',       team2:'Belgium',       score1:2, score2:1, source:'verified' },
+  { round:'Quarterfinal', team1:'England',     team2:'Norway',        score1:2, score2:1, source:'verified' },
+  { round:'Quarterfinal', team1:'Argentina',   team2:'Switzerland',   score1:3, score2:1, source:'verified' },
 ];
 
 const _vkey = r => [r.team1,r.team2].sort().join('|')+'|'+r.round;
 const _vkeys = new Set(VERIFIED_RESULTS.map(_vkey));
 let manualResults = JSON.parse(localStorage.getItem('wc26_manual') || '[]').filter(r => !_vkeys.has(_vkey(r)));
-let apiResults    = [];
 
 // ─── COMPUTED POOL (trades applied) ──────────────────────────────────────────
 function getPool() {
@@ -643,14 +641,8 @@ function normalizeTeam(name) {
 }
 
 function allResults() {
-  // Priority order: VERIFIED_RESULTS (hardcoded) > manualResults > apiResults
-  // API results fill in anything new beyond what's hardcoded
-  const usedKeys = new Set([
-    ...VERIFIED_RESULTS.map(_vkey),
-    ...manualResults.map(_vkey),
-  ]);
-  const freshFromApi = apiResults.filter(r => !usedKeys.has(_vkey(r)));
-  return [...VERIFIED_RESULTS, ...manualResults, ...freshFromApi];
+  // VERIFIED_RESULTS is the authoritative base. manualResults add anything new.
+  return [...VERIFIED_RESULTS, ...manualResults];
 }
 
 function calcScores(pool) {
@@ -737,36 +729,9 @@ function getChampion() {
 }
 
 // ─── API FETCH ────────────────────────────────────────────────────────────────
-async function fetchScores() {
-  const btn    = document.getElementById('sync-btn');
-  const status = document.getElementById('sync-status');
-  btn.classList.add('spinning');
-  status.textContent = 'Fetching scores…';
-  try {
-    const res  = await fetch('https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json');
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    apiResults = [];
-    for (const m of (data.matches || [])) {
-      if (!m.score) continue;
-      const ft = m.score.ft;
-      if (!Array.isArray(ft) || ft.length < 2 || ft[0] === null) continue;
-      const round = mapRound(m.round);
-      if (!round) continue;
-      const t1 = normalizeTeam(m.team1), t2 = normalizeTeam(m.team2);
-      if (!t1 || !t2) continue;
-      apiResults.push({ round, team1:t1, team2:t2, score1:ft[0], score2:ft[1], source:'api' });
-    }
-    const now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-    status.textContent = `Last synced ${now}`;
-    document.getElementById('sub-line').textContent =
-      allResults().length > 0
-        ? `${allResults().length} results · live standings`
-        : 'Tournament underway — no results yet';
-  } catch(e) {
-    status.textContent = 'Sync failed — showing manual data';
-  }
-  btn.classList.remove('spinning');
+function fetchScores() {
+  // API fetch removed — all results are manually verified and hardcoded.
+  // Add new results to VERIFIED_RESULTS in the source and push to GitHub.
   renderAll();
 }
 
@@ -1048,8 +1013,7 @@ function showTab(name, btn) {
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
 renderAll();
-fetchScores();
-setInterval(fetchScores, 10 * 60 * 1000);
+// Results are hardcoded — no auto-fetch needed.
 
 document.getElementById('result-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('result-modal')) closeResultModal();
